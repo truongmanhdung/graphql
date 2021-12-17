@@ -1,16 +1,36 @@
-const moogoose = require('moogoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const BookSchema = new Schema({
+const BookSchema = new Schema(
+  {
     name: {
-        type: String,
+      type: String,
+    },
+    slug: {
+      type: String,
+      lowercase: true,
     },
     genre: {
-        type: String,
+      type: String,
     },
-    author: {
-        type: String,
-    }
-})
+    image: {
+      type: String,
+      default: 'https://i.imgur.com/NVRNzyf.jpg',
+    },
+    price: {
+      type: Number,
+    },
+    des: {
+      type: String,
+    },
+    authorId: {
+      type: String,
+    },
+  },
+  {
+    collection: "books",
+    timestamps: true,
+  }
+);
 
-module.exports = moogoose.module('books', BookSchema)
+module.exports = mongoose.model("books", BookSchema);

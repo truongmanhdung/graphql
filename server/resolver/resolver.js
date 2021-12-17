@@ -1,26 +1,84 @@
-const { books, authors } = require("../data/static");
-
 const resolvers = {
-    Query: {
-        books: () => books,
-        book: (parent, args) => books.find(book => book.id.toString() === args.id), 
-        authors: () => authors,
-        author: (parent, args) => authors.find(author => author.id.toString() === args.id), 
+  Query: {
+    books: async (parent, args, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.getAllBooks();
     },
-    Book: {
-        author: (parent, args) => authors.find(author => author.id.toString() === parent.authorId.toString())
+    book: async (parent, { slug }, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.getBookBySlug(slug);
     },
-    Author: {
-        books: (parent, args) => books.filter(book => book.authorId.toString() === parent.id.toString())
+    authors: async (parent, args, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.getAllAuthors();
     },
+    author: async (parent, { slug }, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.getAuthorBySlug(slug);
+    },
+    user: async (parent, {email}, { mongooseDataMethods }) => {
+      console.log('email', email);
+      return await mongooseDataMethods.getUserByEmail(email);
+    },
+    users: async (parent, args, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.getUsers();
+    },
+    orders : async (parent, args, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.getOrders(args);
+    },
+    order: async (parent, {id}, { mongooseDataMethods}) => {
+      return await mongooseDataMethods.getOrderById(id);
+    },
+  },
+  Book: {
+    author: async ({ authorId }, args, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.getAuthorById(authorId);
+    },
+  },
+  Author: {
+    books: async ({id}, args, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.getAllBooks({ authorId: id });
+    },
+  },
+  // MUTATION
 
-
-    // MUTATION
-    
-    Mutation: {
-        createAuthor: (parent, args) => args,
-        createBook: (parent, args) => args,
+  Mutation: {
+    createAuthor: async (parent, args, { mongooseDataMethods }) => {
+      console.log(args);
+      return await mongooseDataMethods.createAuthor(args);
+    },
+    updateAuthor: async (parent, args, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.updateAuthor(args);
+    },
+    deleteAuthor: async (parent, args, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.deleteAuthor(args);
+    },
+    createBook: async (parent, args, { mongooseDataMethods }) => {
+      console.log(args);
+      return await mongooseDataMethods.createBook(args);
+    },
+    updateBook: async (parent, args, { mongooseDataMethods}) => {
+      console.log('updtae', args)
+      return await mongooseDataMethods.updateBook(args);
+    },
+    deleteBook: async (parent, args, { mongooseDataMethods}) => {
+      return await mongooseDataMethods.deleteBook(args);
+    },
+    createUser: async (parent, args, { mongooseDataMethods}) => {
+      return await mongooseDataMethods.signUpUser(args);
+    },
+    createOrder: async (parent, args, { mongooseDataMethods}) => {
+      return await mongooseDataMethods.createOrder(args);
+    },
+    updateStatusOrder: async (parent, args, { mongooseDataMethods }) => {
+      return await mongooseDataMethods.updateStatusOrder(args);
+    },
+    deleteStatusOrder: async (parent, args, { mongooseDataMethods}) => {
+      return await mongooseDataMethods.deleteStatusOrder(args);
+    },
+    danhGiaOrder: async (parent, args, { mongooseDataMethods}) => {
+      return await mongooseDataMethods.danhGiaOrder(args);
+    },
+    login : async (parent, args, { mongooseDataMethods}) => {
+      return await mongooseDataMethods.login(args);
     }
-}
+  },
+};
 
 module.exports = resolvers;

@@ -1,14 +1,29 @@
-const moogoose = require('moogoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const AuthorSchema = new Schema({
+const AuthorSchema = new Schema(
+  {
     name: {
-        type: String,
-
+      type: String,
     },
-    age: {
-        type: Number,
-    }
-})
+    slug: {
+      type: String,
+      lowercase: true,
+    },
+    address: {
+      type: String,
+    },
+    phone: {
+      type: Number,
+    },
+    email: {
+      type: String,
+    },
+  },
+  {
+    collection: "authors",
+    timestamps: true,
+  }
+);
 
-module.exports = moogoose.module('authors', AuthorSchema)
+module.exports = mongoose.model("authors", AuthorSchema);
